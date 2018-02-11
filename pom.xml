@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ics.forth.isl</groupId>
+	<artifactId>SPARQLD_ARQ_3.3</artifactId>
+	<packaging>jar</packaging>
+	<name>SPARQLD_ARQ_3.3</name>
+	<version>1.1</version>
+
+	<description>SPARQLD</description>
+
+	<properties>
+		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+		<ver.slf4j>1.7.21</ver.slf4j>
+		<ver.log4j>1.2.17</ver.log4j>
+		<rdf4j.version>2.1.3</rdf4j.version>
+		<semargl.version>0.7</semargl.version>
+		<ver.httpclient>4.5.2</ver.httpclient>
+		<ver.httpcore>4.4.4</ver.httpcore>
+		<ver.libthrift>0.9.3</ver.libthrift>
+		<ver.commonslang3>3.4</ver.commonslang3>
+		<ver.commonscsv>1.3</ver.commonscsv>
+		<jdk.version>1.8</jdk.version>
+		<maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
+	</properties>
+
+	<dependencies>
+		<!-- ANY23 -->
+		<dependency>
+			<groupId>org.apache.any23</groupId>
+			<artifactId>apache-any23-csvutils</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<!--END ANY23 -->
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-core</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-shaded-guava</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${ver.httpclient}</version>
+		</dependency>
+
+		<!-- dependency> <groupId>com.github.jsonld-java</groupId> <artifactId>jsonld-java</artifactId> 
+			</dependency> -->
+
+		<!-- replace that used via jsonld-java -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-cache</artifactId>
+			<version>${ver.httpclient}</version>
+			<exclusions>
+				<!-- Replace with slf4j adapter -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>${ver.libthrift}</version>
+			<exclusions>
+				<!-- Use whatever version Jena is using -->
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpcore</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.commons</groupId>
+					<artifactId>commons-lang3</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Intercept any uses of Jakarta Commons Logging e.g. Apache Common HTTP 
+			client. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${ver.slf4j}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>${ver.commonscsv}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${ver.commonslang3}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.16</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<!-- Tika -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>1.14</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers</artifactId>
+			<version>1.14</version>
+		</dependency>
+		<!-- RDF4j -->
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-rdfjson</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-model</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-api</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-turtle</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-ntriples</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-rdfxml</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-nquads</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-n3</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-trix</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-repository-sail</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-sail-memory</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-repository-api</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-rio-jsonld</artifactId>
+			<version>${rdf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.semarglproject</groupId>
+			<artifactId>semargl-rdf4j</artifactId>
+			<version>${semargl.version}</version>
+		</dependency>
+
+		<!-- END RDF4j -->
+
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.20</version>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.17</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<!-- FOR TEST <dependency> <groupId>org.apache.jena</groupId> <artifactId>jena-core</artifactId> 
+			<classifier>tests</classifier> <version>3.3.0</version> <scope>test</scope> 
+			</dependency> <dependency> <groupId>org.apache.jena</groupId> <artifactId>jena-base</artifactId> 
+			<classifier>tests</classifier> <version>3.3.0</version> <scope>test</scope> 
+			</dependency> <dependency> <groupId>com.jayway.awaitility</groupId> <artifactId>awaitility</artifactId> 
+			<scope>test</scope> </dependency> <dependency> <groupId>org.mockito</groupId> 
+			<artifactId>mockito-core</artifactId> <version>1.9.5</version> <scope>test</scope> 
+			</dependency> -->
+		<!-- END TEST -->
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>org/apache/jena/arq/arq-properties.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>org/apache/jena/arq/arq-properties.xml</exclude>
+				</excludes>
+			</resource>
+			<!-- resource> <directory>${basedir}/../</directory> <targetPath>META-INF</targetPath> 
+				</resource> -->
+		</resources>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<optimize>true</optimize>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+					<arguments>
+						<argument>-Dexec.cleanupDaemonThreads=false</argument>
+					</arguments>
+				</configuration>
+			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-source-plugin</artifactId> 
+				<version>3.0.1</version> <executions> <execution> <id>attach-sources</id> 
+				<goals> <goal>jar</goal> </goals> <configuration> <outputDirectory>/C/test</outputDirectory> 
+				<finalName>arq_sparql</finalName> <attach>false</attach> </configuration> 
+				</execution> </executions> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-jar-plugin</artifactId> <version>3.0.2</version> <executions> 
+				<execution> <goals> <goal>jar</goal> </goals> <configuration> <includes> 
+				<include>**/service/*</include> </includes> </configuration> </execution> 
+				</executions> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-assembly-plugin</artifactId> <version>${maven-assembly-plugin.version}</version> 
+				<executions> <execution> <id>assembly</id> <phase>package</phase> <goals> 
+				<goal>single</goal> </goals> </execution> </executions> <configuration> <attach>true</attach> 
+				<skipAssembly>true</skipAssembly> <tarLongFileMode>gnu</tarLongFileMode> 
+				</configuration> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-resources-plugin</artifactId> <version>3.0.2</version> 
+				<configuration> <encoding>UTF-8</encoding> </configuration> </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<!--<minimizeJar>true</minimizeJar> <filter> <artifact>log4j:log4j</artifact> 
+								<includes> <include>**</include> </includes> </filter> <filter> <artifact>commons-logging:commons-logging</artifact> 
+								<includes> <include>**</include> </includes> </filter> -->
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>test.main</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>ics.forth.query_analyzer.Main</mainClass>
+							<arguments>
+								<argument>-Dexec.cleanupDaemonThreads=false</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
