@@ -14,21 +14,31 @@ PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX dbc:<http://dbpedia.org/resource/Category:>
 PREFIX dc:  <http://purl.org/dc/elements/1.1/>
+
 prefix swc: <http://data.semanticweb.org/ns/swc/ontology#>
 prefix swrc: <http://swrc.ontoware.org/ontology#>
 prefix eswc: <http://data.semanticweb.org/conference/eswc/>
-prefix iswc:  <http://data.semanticweb.org/conference/iswc/2009/>
-prefix dbpedia: <http://dbpedia.org/ontology/>
 prefix foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix purl: <http://purl.org/ontology/bibo/>
+prefix dbpedia: <http://dbpedia.org/ontology/>
+prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
-SELECT DISTINCT * WHERE 
+SELECT  DISTINCT ?author ?role ?paper ?place ?capital ?latitude ?longitude  ?proceedings WHERE 
 {
-	SERVICE <http://139.91.183.46:8895/sparql>
+	SERVICE <http://139.91.183.46:8898/sparql>
 	{ 
-	  $keggDrug <http://bio2rdf.org/ns/bio2rdf#xRef> $cas . 
-	  $keggDrug <http://bio2rdf.org/ns/bio2rdf#mass> $mass.
-	 }
+	?role swc:isRoleAt  eswc:2010.
+	?role swc:heldBy ?author .
+	?proceedings swc:relatedToEvent eswc:2010.
+	?paper swrc:author ?author .
+	?author foaf:based_near ?place.
+	?paper swc:isPartOf ?proceedings .
+	}
+
+	SERVICE <http://139.91.183.46:8891/sparql>
+	{
+	?place dbpedia:capital ?capital;
+	geo:lat ?latitude;	
+	geo:long ?longititude.
+	}
 
 }

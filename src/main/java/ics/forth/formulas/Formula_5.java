@@ -42,13 +42,16 @@ public class Formula_5 extends Formula {
 		//get all possible orders
 		orders=getPermutation(numOfservices);
 		for (List<Integer> order : orders) {
+			System.out.println("|||||ORDER5 "+order);
 			//initialize empty bindings, totalcost of each run and iteration position
 			double cost=0;
 			int i=1;
 			Set<Node> bindings= new HashSet<>();
 			//for each possible order calculate cost, storing the bindings used and multiplying with weight
 			for (Integer num : order) {
-				cost+=calculateCost(servOrd.get(num),bindings)*getWeightOrder(numOfservices,i++);
+				double costTem=calculateCost(servOrd.get(num),bindings);
+				cost+=costTem*getWeightOrder(numOfservices,i++);
+				System.out.println("|||||||5| " + costTem + " " +getWeightOrder(numOfservices,i-1) );
 			}
 			costs_f5.add(cost);
 		}

@@ -12,86 +12,103 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 
-
 import ics.forth.formulas.Formula;
+import ics.forth.formulas.Formula7greedy;
 import ics.forth.formulas.Formula7test;
+import ics.forth.formulas.FormulaTest;
 import ics.forth.formulas.Formula_4;
 import ics.forth.formulas.Formula_5;
 import ics.forth.formulas.Formula_6;
-import ics.forth.formulas.form4test;
 import ics.forth.optimize.Query_Reorderer;
 import ics.forth.utils.QueryExecuter;
 import ics.forth.utils.ReadFile;
 import ics.forth.utils.Resources;
 import ics.forth.utils.Write2Excel;
 
-/**
- * Finds and evaluates Query Service patterns cost estimations .
- *
- * @author Thanos Yannakis (yannakis@ics.forth.gr)
- */
-public class mainTesting {
-	/**
-	 * Execute all formulas, export costs and real query execution times for each order
-	 * @param args
-	 *            the command line arguments
-	 */
+public class testingRDFbenchmain {
+
 	public static void main(String[] args) {
 		//Jena functions
-		//Model model = ModelFactory.createDefaultModel();
-		Query query=QueryFactory.create(new ReadFile().getQuery()); // The query to run
-		//execQuery(query, model);
-		System.out.println(query);
-		//Get the handler for the query analyzer
-		Query_analyzer qAnalyzer = new Query_analyzer(query);
-		qAnalyzer.analyze();
-		printQueryStats(qAnalyzer);
-		//Get the handler for query service reorder
-		Query_Reorderer qReorder=new Query_Reorderer(query, qAnalyzer);
-		//get the handler for query execution
-//		QueryExecuter qExec= new QueryExecuter(Resources.TEST_REPETITIONS);
-		//List<Double> exec_times;
-		
-		//Write2Excel excel=new Write2Excel("Q_RE 2");
-		Formula form;
-		//Formula 4
-		List<Long> times= new ArrayList<>();
-//		for(int i=0;i<5;i++) {
-			long timenow=get2mil(System.nanoTime());
-			form=execFormula("Formula7", qAnalyzer);
-	//		getExecTimes(form, qReorder, qExec);
-			System.out.println((get2mil(System.nanoTime())-timenow));
-			System.out.println(form.getCosts() + " " + form.getOrders());
-//			times.add((get2mil(System.nanoTime())-timenow));
-//		}
-//		System.out.println(times.stream().mapToDouble(a->a).average().getAsDouble());
-//		exec_times=null;
-		//exec_times=getExecTimes(form, qReorder, qExec);
-		//toExcel(form,excel, exec_times);
-		//excel.finish();
-		//excel=new Write2Excel("");
-		//Formula 5
-//		rm=execFormula("Formula5",qAnalyzer);
-		//exec_times=null;
-//		exec_times=getExecTimes(form, qReorder, qExec);
-//		toExcel(form,excel, exec_times);
-//		excel.finish();
-//		excel=new Write2Excel("");
-		//Formula 6
-//		form=execFormula("Formula6",qAnalyzer);
-//		exec_times=null;
-//		exec_times=getExecTimes(form, qReorder, qExec);
-//		toExcel(form,excel, exec_times);
-		//finish writing to excel
-//		excel.finish();
-//		check jars versions
-//		ClassLoader classloader =
-//		   org.apache.poi.poifs.filesystem.POIFSFileSystem.class.getClassLoader();
-//		URL res = classloader.getResource(
-//		         "org/apache/poi/poifs/filesystem/POIFSFileSystem.class");
-//		String path = res.getPath();
-		System.out.println("Finished");
-		
+				//Model model = ModelFactory.createDefaultModel();
+				
+				List<String> queries= new ArrayList<String>();
+				queries.add("S2");
+				queries.add("S3");
+				queries.add("S4");
+				queries.add("S5");
+				queries.add("S10");
+				queries.add("S11");
+				queries.add("S12");
+				queries.add("S13");
+				queries.add("S14");
+				queries.add("C1");
+				queries.add("C2");
+				queries.add("C5");
+				queries.add("C6");
+				queries.add("C7");
+				queries.add("C8");
+				queries.add("C9");
+				queries.add("C10");
+				for(String qq: queries) {
+				Query query=QueryFactory.create(new ReadFile(qq+".txt").getQuery()); // The query to run
+//				QueryExecuter qExec2= new QueryExecuter(1);
+//				System.out.println(qExec2.plainExecQuery(query));
+				//execQuery(query, model);
+				System.out.println("----------QUERY\n" +query + "\n------- ");
+				//Get the handler for the query analyzer
+				Query_analyzer qAnalyzer = new Query_analyzer(query);
+				qAnalyzer.analyze();
+				System.out.println("---------STATS");
+				printQueryStats(qAnalyzer);
+				System.out.println("---------");
+				//Get the handler for query service reorder
+				Query_Reorderer qReorder=new Query_Reorderer(query, qAnalyzer);
+				//get the handler for query execution
+				QueryExecuter qExec= new QueryExecuter(Resources.TEST_REPETITIONS);
+				List<Double> exec_times;
+				
+				Write2Excel excel=new Write2Excel(qq);
+				Formula form;
+				//Formula 4
+				form=execFormula("Timers", qAnalyzer);
+//				exec_times=null;
+				exec_times=null;//getExecTimes(form, qReorder, qExec);
+				if(exec_times!=null) {
+					toExcelTime(form,excel, exec_times);
+				}
+				
+				form=execFormula("formula7greedy", qAnalyzer);
+//				exec_times=null;
+				exec_times=null;
+				toExcel(form,excel, exec_times);
+				
+				/*
+				form=execFormula("formula4", qAnalyzer);
+//				exec_times=null;
+				exec_times=null;
+				toExcel(form,excel, exec_times);
+
+				form=execFormula("formula5", qAnalyzer);
+//				exec_times=null;
+				exec_times=null;
+				toExcel(form,excel, exec_times);
+
+				form=execFormula("formula6", qAnalyzer);
+//				exec_times=null;
+				exec_times=null;
+				toExcel(form,excel, exec_times);
+
+				form=execFormula("formula7", qAnalyzer);
+//				exec_times=null;
+				exec_times=null;
+				toExcel(form,excel, exec_times);
+				//finish writing to exc
+				*/
+				excel.finish();
+				}
+				System.out.println("Finished");
+				
+
 	}
 	/**
 	 * Executes Reordered queries and returns avg times or each order  
@@ -131,6 +148,12 @@ public class mainTesting {
 			excel.appendTimes(times);
 		}
 		
+	}
+	private static void toExcelTime(Formula formula, Write2Excel excel, List<Double> times) {
+		if(!Resources.EXPORT2EXCEL) {
+			return;
+		}
+		excel.append2(formula.getClass().getSimpleName(), times, formula.getOrders());
 	}
 	/**
 	 * executes queries in the orders given by the formula
@@ -201,15 +224,23 @@ public class mainTesting {
 				if(Resources.USE_FORMULA_6)
 					form=new Formula_6(qAnalyzed);
 				break;
+			case "formula7":
+				if(Resources.USE_FORMULA_7)
+					form=new Formula7test(qAnalyzed);
+				break;
+			case "formula7greedy":
+					form=new Formula7greedy(qAnalyzed);
+				break;
+				
 			default:
-				form=new Formula7test(qAnalyzed);
+				form=new FormulaTest(qAnalyzed);
 		}
 		long stopTime = get2mil(System.nanoTime());
 		long elapsedTime = stopTime - startTime;
 		if(form!=null) {
-//			System.out.println(formula.toLowerCase().trim()+" "+elapsedTime);
-//			System.out.println(form.getOrders().toString().replaceAll(",", "_"));
-//			System.out.println(form.getCosts() + " size" +form.getCosts().size());
+			System.out.println(formula.toLowerCase().trim()+" "+elapsedTime);
+			System.out.println(form.getOrders().toString().replaceAll(",", "_"));
+			System.out.println(form.getCosts() + " size" +form.getCosts().size());
 		}
 		return form;
 	}
@@ -231,4 +262,5 @@ public class mainTesting {
 			System.out.println(service_analyzer.getTotalSubs() + " " + service_analyzer.getTotalPreds() + " " + service_analyzer.getTotalObjs());
 		}
 	}
+
 }

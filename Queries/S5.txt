@@ -14,21 +14,18 @@ PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX dbc:<http://dbpedia.org/resource/Category:>
 PREFIX dc:  <http://purl.org/dc/elements/1.1/>
-prefix swc: <http://data.semanticweb.org/ns/swc/ontology#>
-prefix swrc: <http://swrc.ontoware.org/ontology#>
-prefix eswc: <http://data.semanticweb.org/conference/eswc/>
-prefix iswc:  <http://data.semanticweb.org/conference/iswc/2009/>
-prefix dbpedia: <http://dbpedia.org/ontology/>
-prefix foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix purl: <http://purl.org/ontology/bibo/>
 
-SELECT DISTINCT * WHERE 
+SELECT ?film ?director ?genre 
+WHERE 
 {
-	SERVICE <http://139.91.183.46:8895/sparql>
-	{ 
-	  $keggDrug <http://bio2rdf.org/ns/bio2rdf#xRef> $cas . 
-	  $keggDrug <http://bio2rdf.org/ns/bio2rdf#mass> $mass.
-	 }
-
+  SERVICE <http://139.91.183.46:8891/sparql>
+  { 
+  ?film <http://dbpedia.org/ontology/director>  ?director .   
+  ?director <http://dbpedia.org/ontology/nationality> <http://dbpedia.org/resource/Italy> .
+  } 
+  SERVICE <http://www.linkedmdb.org/sparql>
+  { 
+  ?x <http://www.w3.org/2002/07/owl#sameAs> ?film .
+  ?x <http://data.linkedmdb.org/resource/movie/genre> ?genre .
+  }
 }

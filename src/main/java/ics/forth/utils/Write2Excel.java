@@ -80,6 +80,30 @@ public class Write2Excel {
 		}
 		checkNumOfCols(orders.size());
 	}
+	public void append2(String formulaName,List<Double> costs, List<List<Integer>> orders)  {
+		Row row1 = datatypeSheet.createRow(numRows++);
+		//add Query and Formula number 
+		createRowName(row1,formulaName);
+		row1 = datatypeSheet.createRow(numRows++);
+		Row row2 = datatypeSheet.createRow(numRows++);
+		//get our results ordered
+		Map<String,Double> ordersNcosts=getOrderedIndexes(costs,  orders);
+		//Start writing to new rows	
+		//add names
+		createRowName(row1,Resources.COL_NAME_ORDERS);
+		createRowName(row2,Resources.COL_NAME_TIME);
+		int colNum=1;
+		for (String order : ordersNcosts.keySet()) {
+			Cell cell = row1.createCell(colNum);	
+			cell.setCellValue((String)order);
+			cell.setCellStyle(getStyle());
+			
+			cell = row2.createCell(colNum++);
+			cell.setCellValue((Double)ordersNcosts.get(order));
+			cell.setCellStyle(getStyle());
+		}
+		checkNumOfCols(orders.size());
+	}
 	/**
 	 * Adds average execution times
 	 * @param times

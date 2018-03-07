@@ -52,8 +52,10 @@ public class Formula_4 extends Formula {
 		for (List<Integer> order : orders) {
 			cost=0;
 			int i=1;
+			System.out.println("|||||ORDER "+order);
 			for (Integer num : order) {
 				cost+=services_cost.get(num)*getWeightOrder(numOfservices,i++);
+				System.out.println("|||||||" + services_cost.get(num) + " " +getWeightOrder(numOfservices,i-1) );
 			}
 			costs_f4.add(cost);
 		}

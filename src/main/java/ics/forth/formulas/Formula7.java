@@ -50,7 +50,8 @@ public class Formula7 extends Formula {
 			//for each possible order calculate cost, storing the 
 			//bindings used and multiplying with weight
 			for (Integer num : order) {
-				cost+=calculateCost(servOrd.get(num),bindings)*
+				double costTem=calculateCost(servOrd.get(num),bindings);
+				cost+=costTem*
 						getWeightOrder(numOfservices,ii++);
 			}
 			costs_f5.add(cost);

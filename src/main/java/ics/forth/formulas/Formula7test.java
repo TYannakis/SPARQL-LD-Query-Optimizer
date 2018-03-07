@@ -1,9 +1,12 @@
 package ics.forth.formulas;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.graph.Node;
 
@@ -13,17 +16,17 @@ import ics.forth.query_analyzer.Var_Analyzer;
 import ics.forth.utils.Resources;
 
 /**
- * implements formula 6/ WVCB
+ * implements formula 7/ JWVCB
  * 
  * @author Thanos Yannakis (yannakis@ics.forth.gr)
  *
  */
-public class Formula_6 extends Formula {
+public class Formula7test extends Formula {
 	private Set<Service_analyzer> services;
 	private List<Double> costs_f6;
 	private List<List<Integer>> orders;
 
-	public Formula_6(Query_analyzer q) {
+	public Formula7test(Query_analyzer q) {
 		services = q.getServices();
 		init();
 	}
@@ -47,8 +50,8 @@ public class Formula_6 extends Formula {
 		orders = getPermutation(numOfservices);
 		int ii = 1;
 		for (List<Integer> order : orders) {
-			System.out.println("|||||ORDER6 "+order);
 			// initialize empty bindings, totalcost of each run and iteration position
+			System.out.println("|||||ORDER7 "+order);
 			double cost = 0;
 			ii = 1;
 			Set<Node> bindings = new HashSet<>();
@@ -58,8 +61,10 @@ public class Formula_6 extends Formula {
 				double costTem=calculateCost(servOrd.get(num), bindings);
 				cost += costTem * 
 						getWeightOrder(numOfservices, ii++);
-				System.out.println("|||||||6| " + costTem + " " +getWeightOrder(numOfservices,ii-1) );
+				System.out.println("|||||||7| " + costTem + " " +getWeightOrder(numOfservices,ii-1) );
+				
 			}
+			
 			costs_f6.add(cost);
 		}
 	}
@@ -76,7 +81,86 @@ public class Formula_6 extends Formula {
 	public List<List<Integer>> getOrders() {
 		return orders;
 	}
-
+	
+//	private List<Double> getJoins(List<Node> vars_s, List<Node> vars_p,List<Node> vars_o){
+//		List<Double> joins= new ArrayList<>();
+//		int jsubs=countDuplicates(vars_s);
+//		joins.add(1+jsubs*Resources.J_Ts);
+//		int jpreds=countDuplicates(vars_p);
+//		joins.add(1+jpreds*Resources.J_Tu);
+//		int jobjs=countDuplicates(vars_o);
+//		joins.add(1+jobjs*Resources.J_Tu);
+//		return joins;
+//	}
+	
+	
+	
+	private double getStarJoins(List<Node> vars_s, List<Node> vars_o){
+		double starJoinWeight=0.0;
+		int jsubs=countDuplicates(vars_s);
+		int jobjs=countDuplicates(vars_o);
+		starJoinWeight=(jsubs+jobjs)*Resources.J_Ts;
+		System.out.println("||||STARj " +(jsubs+jobjs));
+		return starJoinWeight;
+	}
+	
+	private double getChainJoins(List<Node> vars_s, List<Node> vars_o) {
+		int chainjoins=countDuplicates(vars_s,vars_o);
+		System.out.println("||||CHAINj " +(chainjoins));
+		return chainjoins*Resources.J_Tc;
+	}
+	
+	private double getUnusualJoins(List<Node> vars_s,List<Node> vars_p, List<Node> vars_o) {
+		int unusualjoins=countDuplicates(vars_s,vars_p) + countDuplicates(vars_p,vars_o)+ countDuplicates(vars_p);
+		System.out.println("||||CHAINj " +(unusualjoins));
+		return unusualjoins*Resources.J_Tu;
+	}
+	
+//	private double getChainJ(List<Node> vars_s, List<Node> vars_p,List<Node> vars_o) {
+//		int chainjoins=countDuplicates(vars_s,vars_o);
+//		int unusualjoins=countDuplicates(vars_s,vars_p) + countDuplicates(vars_p,vars_o);
+//		return 1+ (chainjoins*Resources.J_Tc)+ (unusualjoins*Resources.J_Tu);
+//	}
+	
+	private int countDuplicates(List<Node> vars) {
+		Map<Node,Integer> histogram= new HashMap<>();
+		vars.forEach(s-> {
+			histogram.put(s, (histogram.containsKey(s) ? histogram.get(s) : -1) +1);
+			}
+		);
+		AtomicInteger dups= new AtomicInteger(0);
+//		System.out.println(vars + " ______");
+//		System.out.println(histogram.entrySet()+" -------");
+		histogram.keySet().forEach(s -> {
+			if(histogram.get(s) > 0)  dups.set(dups.get() + histogram.get(s)); 
+		});
+		//System.out.println("------" + dups.get());
+		return dups.get();
+	}
+	
+	
+	
+	private int countDuplicates(List<Node> vars_a, List<Node> vars_b) {
+		Map<Node,Integer> histogram= new HashMap<>();
+		vars_a.forEach(s-> {
+			histogram.put(s, (histogram.containsKey(s) ? histogram.get(s) : 0) +1);
+			}
+		);
+		AtomicInteger dups= new AtomicInteger(0);
+		vars_b.forEach(b -> {
+			if(histogram.containsKey(b) && histogram.get(b)>0) {
+				dups.incrementAndGet();
+				histogram.put(b, histogram.get(b)-1);
+			}
+		});
+		return dups.get();
+	}
+	
+	private double JoinsWeight(List<Node> vars_s, List<Node> vars_p, List<Node> vars_o) {
+//		System.out.println("|||| Star: "+getStarJoins(vars_s, vars_o)/Resources.J_Ts + " Chain: "+getChainJoins(vars_s, vars_o)/Resources.J_Tc  + " Unusual: "+ getUnusualJoins(vars_s, vars_p, vars_o)/Resources.J_Tu);
+		return 1 + getStarJoins(vars_s, vars_o) + getChainJoins(vars_s, vars_o) + getUnusualJoins(vars_s, vars_p, vars_o);
+	}
+	
 	/**
 	 * return the service cost according to the bindings as a weighted sum
 	 * 
@@ -87,9 +171,13 @@ public class Formula_6 extends Formula {
 	 * @return the weighted sum of each service
 	 */
 	private double calculateCost(Service_analyzer service, Set<Node> bindings) {
-		Double weightedSum = getUnboundVarsCost(service.getSubs(), 
-				service.getPreds(), service.getObjs(), bindings);
-		return weightedSum;
+		Double weightedJoinedSum = getUnboundVarsCost(service.getSubs(), 
+				service.getPreds(), service.getObjs(), bindings)/
+				JoinsWeight(
+						service.getSubs(), 
+						service.getPreds(), 
+						service.getObjs());
+		return weightedJoinedSum;
 	}
 
 	/**

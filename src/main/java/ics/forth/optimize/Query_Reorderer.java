@@ -39,6 +39,7 @@ public class Query_Reorderer {
 		//Append to string the services in the order given and then add a newline
 		orders.forEach(order -> qbuild.append(services.get(order).getServPattern()).append("\n"));
 		//Append the ending } and possible limits/offsets after the bracket
+		qbuild.append(qAnalyzer.getQueryFilter());
 		qbuild.append(qAnalyzer.getQueryEpilogue());
 		
 		//System.out.println("||"+qbuild.toString()+"||");

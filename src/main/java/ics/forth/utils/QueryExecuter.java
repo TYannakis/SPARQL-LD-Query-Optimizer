@@ -1,5 +1,7 @@
 package ics.forth.utils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,9 +39,12 @@ public class QueryExecuter {
 		times=new ArrayList<>();
 		orders.forEach(order -> {
 			System.out.println(order);
-			if(Resources.ENABLE_REMOVER && (order.get(0)==Resources.REMOVE_ORDER || order.get(0)==4)) {
+			if(Resources.ENABLE_REMOVER && (order.get(0)==Resources.REMOVE_ORDER)) {// || order.get(0)==4)) {
 				times.add(999999999.0);
 			}else {
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+				LocalDateTime now = LocalDateTime.now();
+				System.out.println("Started at: "+dtf.format(now)); 
 				times.add(execQuery(qReorder.order2query(order)));
 			}
 		});
@@ -57,6 +62,7 @@ public class QueryExecuter {
 				i -> {
 					Resources.SERVICES_RUN=0;
 					System.out.println(j.getAndIncrement());
+					System.out.println("------Q2run\n"+query.toString()+ "\n---------- ");
 					long startTime = get2mil(System.nanoTime());
 					try (QueryExecution qe = QueryExecutionFactory.create(query, model)) {
 						if (query.isSelectType()) {
@@ -64,7 +70,10 @@ public class QueryExecuter {
 							// Output query results
 	//						ResultSetFormatter.out(System.out, results, query);
 							 //dont show results
-							ResultSetFormatter.consume(results);
+							while(results.hasNext()) {
+								results.next();
+							}
+//							ResultSetFormatter.consume(results);
 						}else {
 							checkQType(qe,query,false);
 						}
@@ -72,8 +81,11 @@ public class QueryExecuter {
 						System.out.println(get2mil(System.nanoTime()) - startTime);
 						System.out.println("\n----------------------------------------------\n\n");
 					} catch (Exception e) {
+						temp_times.add(get2mil(System.nanoTime()) - startTime);
+						System.out.println(get2mil(System.nanoTime()) - startTime);
+						System.out.println("\n----------------------------------------------\n\n");
 						System.out.println("Main Error " + e + " __ " + e.toString());
-						 e.printStackTrace();
+//						 e.printStackTrace();
 					}
 					//calculate time
 					
@@ -89,7 +101,7 @@ public class QueryExecuter {
 	 * @param query
 	 * @return
 	 */
-	public double plainExecQuery(Query query) {
+	public long plainExecQuery(Query query) {
 		long startTime = get2mil(System.nanoTime());
 		try (QueryExecution qe = QueryExecutionFactory.create(query, model)) {
 

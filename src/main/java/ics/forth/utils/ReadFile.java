@@ -31,6 +31,7 @@ public class ReadFile {
 	
 	public ReadFile(String file) {
 		this.file=file;
+		readfile(file);
 	}
 	
 	public void read() {

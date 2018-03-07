@@ -14,21 +14,28 @@ PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX dbc:<http://dbpedia.org/resource/Category:>
 PREFIX dc:  <http://purl.org/dc/elements/1.1/>
-prefix swc: <http://data.semanticweb.org/ns/swc/ontology#>
-prefix swrc: <http://swrc.ontoware.org/ontology#>
-prefix eswc: <http://data.semanticweb.org/conference/eswc/>
-prefix iswc:  <http://data.semanticweb.org/conference/iswc/2009/>
-prefix dbpedia: <http://dbpedia.org/ontology/>
-prefix foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix purl: <http://purl.org/ontology/bibo/>
-
-SELECT DISTINCT * WHERE 
-{
-	SERVICE <http://139.91.183.46:8895/sparql>
+PREFIX linkedmdb: <http://data.linkedmdb.org/resource/movie/>
+ PREFIX dcterms: <http://purl.org/dc/terms/>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+ PREFIX purl: <http://purl.org/dc/terms/>
+ PREFIX nytimes: <http://data.nytimes.com/elements/>
+ 
+ SELECT ?actor 
+ WHERE 
+ {
+	SERVICE <http://139.91.183.46:8896/sparql> 
 	{ 
-	  $keggDrug <http://bio2rdf.org/ns/bio2rdf#xRef> $cas . 
-	  $keggDrug <http://bio2rdf.org/ns/bio2rdf#mass> $mass.
-	 }
-
-}
+	?film purl:title 			?filmTitle .
+	?film linkedmdb:actor 			?actor .
+	?actor owl:sameAs 			?dbpediaURI.
+	}
+	SERVICE <http://139.91.183.46:8897/sparql>
+	{ 
+	?nytURI owl:sameAs 			?dbpediaURI .
+	?nytURI nytimes:topicPage 		?news ;
+ 	nytimes:number_of_variants 	?variants;
+ 	nytimes:associated_article_count ?articleCount;
+ 	nytimes:first_use 		?first_use;
+ 	nytimes:latest_use 		?latest_use
+	}
+	}

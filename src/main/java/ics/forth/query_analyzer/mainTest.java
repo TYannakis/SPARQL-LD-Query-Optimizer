@@ -1,5 +1,7 @@
 package ics.forth.query_analyzer;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -24,8 +26,11 @@ public class mainTest {
 	private List<List<Integer>> permutationList;
 	public static void main(String[] args) {
 		System.out.println("Starting...");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println("Started at: "+dtf.format(now)); 	
 		//ARQ.init();
-		Query query=QueryFactory.create(new ReadFile().getQuery()); // The query to run
+		Query query=QueryFactory.create(new ReadFile("C5.txt").getQuery()); // The query to run
 		//execQuery(query, model);
 		System.out.println(query);
 		QueryExecuter qExec= new QueryExecuter(1);

@@ -24,12 +24,13 @@ public class Query_analyzer extends Var_Analyzer {
 	private Query q; // The whole Query
 	private Set<Service_analyzer> services; // The set of Services in the Query
 	// private List<Node> totalSubs,totalPreds,totalObjs; //TotalVariables in Query
-	private String queryPrologue, queryEpilogue;
+	private String queryPrologue, queryEpilogue, filter;
 
 	public Query_analyzer(Query q) {
 		super();
 		this.q = q;
 		setPrologue();
+		setFilter();
 		setEpilogue();
 	}
 
@@ -87,11 +88,28 @@ public class Query_analyzer extends Var_Analyzer {
 	public String getQueryPrologue() {
 		return queryPrologue;
 	}
-
+	
+	public String getQueryFilter() {
+		return filter;
+	}
+	
 	public String getQueryEpilogue() {
 		return queryEpilogue;
 	}
-
+	
+	private void setFilter() {
+		String testS = q.toString();
+		if(!testS.contains("FILTER")) {
+			filter="";
+			return;
+		}
+		filter= testS.substring(testS.lastIndexOf("FILTER"), testS.lastIndexOf("}"));
+		if(filter.contains("}"))
+		{
+			filter="";
+		}
+	}
+	
 	private void setPrologue() {
 		String testS = q.toString();
 		queryPrologue = testS.substring(0, testS.indexOf("WHERE")) + "WHERE {\n ";

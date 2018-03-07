@@ -84,7 +84,6 @@ public class form4test extends Formula {
 
 		// initialize empty bindings, totalcost of each run and iteration position
 		double cost = 0;
-		ii = 1;
 		Set<Node> bindings = new HashSet<>();
 		// for each possible order calculate cost, storing the bindings used and then
 		// multiplying with the appropriate weight
