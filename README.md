@@ -15,7 +15,7 @@ ables can highly improve the query execution time
 * A greedy algorithm for choosing a near to optimal query execution plan for cases of queries with many service patterns
 
 
-##Reordering methods provided
+### Reordering methods provided
 This extentiom offer 4 reordering methods: 
 1. VC
 2. UVC
