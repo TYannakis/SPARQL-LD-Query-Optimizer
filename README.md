@@ -39,3 +39,11 @@ P. Fafalios and Y. Tzitzikas,
 Bethlehem, Pennsylvania, USA, October 11-15, 2015 
 ``` 
 [PDF](http://users.ics.forth.gr/~fafalios/files/pubs/fafalios_2015_sparql-ld.pdf) | [BIB](http://users.ics.forth.gr/~fafalios/files/bibs/fafalios2015sparql.bib)
+
+
+## Installation
+
+- Download and install [SPARQL-LD](https://github.com/fafalios/sparql-ld "SPARQL-LD") source code
+- Add the new classes
+- Build the sources
+- Try to run the main class "ics.forth.query_analyzer.main"
