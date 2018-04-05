@@ -14,14 +14,20 @@ import org.apache.jena.rdf.model.ModelFactory;
 
 
 import ics.forth.formulas.Formula;
-import ics.forth.formulas.Formula_4;
-import ics.forth.formulas.Formula_5;
-import ics.forth.formulas.Formula_6;
+import ics.forth.formulas.GreedyVC;
+import ics.forth.formulas.GreedyUVC;
+import ics.forth.formulas.GreedyWUVC;
+import ics.forth.formulas.GreedyJWUVC;
+import ics.forth.formulas.JWUVC;
+import ics.forth.formulas.VC;
+import ics.forth.formulas.UVC;
+import ics.forth.formulas.WUVC;
 import ics.forth.optimize.Query_Reorderer;
 import ics.forth.utils.QueryExecuter;
 import ics.forth.utils.ReadFile;
 import ics.forth.utils.Resources;
 import ics.forth.utils.Write2Excel;
+import notused.FormulaTest;
 
 /**
  * Finds and evaluates Query Service patterns cost estimations .
@@ -38,7 +44,6 @@ public class Main {
 		//Jena functions
 		//Model model = ModelFactory.createDefaultModel();
 		Query query=QueryFactory.create(new ReadFile().getQuery()); // The query to run
-		//execQuery(query, model);
 		System.out.println(query);
 		//Get the handler for the query analyzer
 		Query_analyzer qAnalyzer = new Query_analyzer(query);
@@ -49,36 +54,32 @@ public class Main {
 		//get the handler for query execution
 		QueryExecuter qExec= new QueryExecuter(Resources.TEST_REPETITIONS);
 		List<Double> exec_times;
-		
-		Write2Excel excel=new Write2Excel("Q_RE 2");
+		//Create excel output 
+		Write2Excel excel=new Write2Excel("Results");
 		Formula form;
-		//Formula 4
-		form=execFormula("Formula4", qAnalyzer);
+		//Formula VC
+		form=execFormula("VC", qAnalyzer);
 //		exec_times=null;
 		exec_times=getExecTimes(form, qReorder, qExec);
 		toExcel(form,excel, exec_times);
-		excel.finish();
-		excel=new Write2Excel("");
-		//Formula 5
-		form=execFormula("Formula5",qAnalyzer);
+		//Formula UVC
+		form=execFormula("UVC",qAnalyzer);
 		exec_times=null;
 //		exec_times=getExecTimes(form, qReorder, qExec);
 		toExcel(form,excel, exec_times);
-		excel.finish();
-		excel=new Write2Excel("");
-		//Formula 6
-		form=execFormula("Formula6",qAnalyzer);
+		//Formula WUVC
+		form=execFormula("WUVC",qAnalyzer);
 		exec_times=null;
-//		exec_times=getExecTimes(form, qReorder, qExec);
 		toExcel(form,excel, exec_times);
-		//finish writing to excel
+		//Formula JWUVC
+		form=execFormula("JWUVC",qAnalyzer);
+		exec_times=null;
+		toExcel(form,excel, exec_times);
+		//Formula JWUVC with greedy algorithm
+		form=execFormula("greedy_JWUVC",qAnalyzer);
+		exec_times=null;
+		toExcel(form,excel, exec_times);
 		excel.finish();
-//		check jars versions
-//		ClassLoader classloader =
-//		   org.apache.poi.poifs.filesystem.POIFSFileSystem.class.getClassLoader();
-//		URL res = classloader.getResource(
-//		         "org/apache/poi/poifs/filesystem/POIFSFileSystem.class");
-//		String path = res.getPath();
 		System.out.println("Finished");
 		
 	}
@@ -178,20 +179,32 @@ public class Main {
 		long startTime = get2mil(System.nanoTime());
 		Formula form=null;
 		switch(formula.toLowerCase().trim()) {
-			case "formula4":
-				if(Resources.USE_FORMULA_4)
-					form=new Formula_4(qAnalyzed);
+			case "VC":
+					form=new VC(qAnalyzed);
 				break;
-			case "formula5":
-				if(Resources.USE_FORMULA_5)
-					form=new Formula_5(qAnalyzed);
+			case "UVC":
+					form=new UVC(qAnalyzed);
 				break;
-			case "formula6":
-				if(Resources.USE_FORMULA_6)
-					form=new Formula_6(qAnalyzed);
+			case "WUVC":
+					form=new WUVC(qAnalyzed);
 				break;
+			case "JWUVC":
+					form=new JWUVC(qAnalyzed);
+				break;
+			case "greedy_VC":
+					form=new GreedyVC(qAnalyzed);
+				break;
+			case "greeedy_UVC":
+				form=new GreedyUVC(qAnalyzed);
+				break;
+			case "greeedy_WUVC":
+				form=new GreedyWUVC(qAnalyzed);
+			break;
+			case "greeedy_JWUVC":
+				form=new GreedyJWUVC(qAnalyzed);
+			break;
 			default:
-				form=new Formula_4(qAnalyzed);
+				form=new GreedyJWUVC(qAnalyzed);
 		}
 		long stopTime = get2mil(System.nanoTime());
 		long elapsedTime = stopTime - startTime;

@@ -22,7 +22,11 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
+/**
+ * Writes to Excel
+ * @author Thanos Yannakis
+ *
+ */
 public class Write2Excel {
 	private FileInputStream excelFile;
 	private XSSFWorkbook workbook;

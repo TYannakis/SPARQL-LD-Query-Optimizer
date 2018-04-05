@@ -16,12 +16,12 @@ import ics.forth.query_analyzer.Service_analyzer;
  * @author  Thanos Yannakis (yannakis@ics.forth.gr)
  *
  */
-public class Formula_4 extends Formula {
+public class VC extends Formula {
 	private Query_analyzer query;
 	private Set<Service_analyzer> services;
 	private List<Double> costs_f4;
 	private List<List<Integer>> orders;
-	public Formula_4(Query_analyzer q) {
+	public VC(Query_analyzer q) {
 		this.query=q;
 		services = q.getServices();
 		init();

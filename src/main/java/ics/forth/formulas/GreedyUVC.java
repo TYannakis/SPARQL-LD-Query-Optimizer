@@ -16,18 +16,18 @@ import ics.forth.query_analyzer.Var_Analyzer;
 import ics.forth.utils.Resources;
 
 /**
- * implements formula 7/ JWVCB
+ * implements formula 5 with greedy algorithm/ UVC
  * 
  * @author Thanos Yannakis (yannakis@ics.forth.gr)
  *
  */
-public class Formula7greedy extends Formula {
+public class GreedyUVC extends Formula {
 	private Set<Service_analyzer> services;
 	private List<Double> costs_f6;
 	private List<List<Integer>> orders;
 	private Set<Node> tempBindedVars;
 
-	public Formula7greedy(Query_analyzer q) {
+	public GreedyUVC(Query_analyzer q) {
 		services = q.getServices();
 		init();
 	}
@@ -75,6 +75,7 @@ public class Formula7greedy extends Formula {
 							sa.getPreds(), sa.getObjs());
 				}
 			}
+			
 			System.out.println("---MIN: " + index + "  with: " + min);
 			System.out.println("---tempBinds "+tempBindedVars);
 			bindings.addAll(tempBindedVars);
@@ -86,6 +87,8 @@ public class Formula7greedy extends Formula {
 		orders.add(newOrder);
 		costs_f6.add(0.0);
 	}
+	
+	
 	
 	private Set<Integer> getOrder(int servOrd){
 		Set<Integer> l=new HashSet<>();
@@ -108,85 +111,13 @@ public class Formula7greedy extends Formula {
 	public List<List<Integer>> getOrders() {
 		return orders;
 	}
+
 	
-//	private List<Double> getJoins(List<Node> vars_s, List<Node> vars_p,List<Node> vars_o){
-//		List<Double> joins= new ArrayList<>();
-//		int jsubs=countDuplicates(vars_s);
-//		joins.add(1+jsubs*Resources.J_Ts);
-//		int jpreds=countDuplicates(vars_p);
-//		joins.add(1+jpreds*Resources.J_Tu);
-//		int jobjs=countDuplicates(vars_o);
-//		joins.add(1+jobjs*Resources.J_Tu);
-//		return joins;
+
+//	private double JoinsWeight(List<Node> vars_s, List<Node> vars_p, List<Node> vars_o) {
+////		System.out.println("|||| Star: "+getStarJoins(vars_s, vars_o)/Resources.J_Ts + " Chain: "+getChainJoins(vars_s, vars_o)/Resources.J_Tc  + " Unusual: "+ getUnusualJoins(vars_s, vars_p, vars_o)/Resources.J_Tu);
+//		return 1 + getStarJoins(vars_s, vars_o) + getChainJoins(vars_s, vars_o) + getUnusualJoins(vars_s, vars_p, vars_o);
 //	}
-	
-	
-	
-	private double getStarJoins(List<Node> vars_s, List<Node> vars_o){
-		double starJoinWeight=0.0;
-		int jsubs=countDuplicates(vars_s);
-		int jobjs=countDuplicates(vars_o);
-		starJoinWeight=(jsubs+jobjs)*Resources.J_Ts;
-		System.out.println("||||STARj " +(jsubs+jobjs));
-		return starJoinWeight;
-	}
-	
-	private double getChainJoins(List<Node> vars_s, List<Node> vars_o) {
-		int chainjoins=countDuplicates(vars_s,vars_o);
-		System.out.println("||||CHAINj " +(chainjoins));
-		return chainjoins*Resources.J_Tc;
-	}
-	
-	private double getUnusualJoins(List<Node> vars_s,List<Node> vars_p, List<Node> vars_o) {
-		int unusualjoins=countDuplicates(vars_s,vars_p) + countDuplicates(vars_p,vars_o)+ countDuplicates(vars_p);
-		System.out.println("||||CHAINj " +(unusualjoins));
-		return unusualjoins*Resources.J_Tu;
-	}
-	
-//	private double getChainJ(List<Node> vars_s, List<Node> vars_p,List<Node> vars_o) {
-//		int chainjoins=countDuplicates(vars_s,vars_o);
-//		int unusualjoins=countDuplicates(vars_s,vars_p) + countDuplicates(vars_p,vars_o);
-//		return 1+ (chainjoins*Resources.J_Tc)+ (unusualjoins*Resources.J_Tu);
-//	}
-	
-	private int countDuplicates(List<Node> vars) {
-		Map<Node,Integer> histogram= new HashMap<>();
-		vars.forEach(s-> {
-			histogram.put(s, (histogram.containsKey(s) ? histogram.get(s) : -1) +1);
-			}
-		);
-		AtomicInteger dups= new AtomicInteger(0);
-//		System.out.println(vars + " ______");
-//		System.out.println(histogram.entrySet()+" -------");
-		histogram.keySet().forEach(s -> {
-			if(histogram.get(s) > 0)  dups.set(dups.get() + histogram.get(s)); 
-		});
-		//System.out.println("------" + dups.get());
-		return dups.get();
-	}
-	
-	
-	
-	private int countDuplicates(List<Node> vars_a, List<Node> vars_b) {
-		Map<Node,Integer> histogram= new HashMap<>();
-		vars_a.forEach(s-> {
-			histogram.put(s, (histogram.containsKey(s) ? histogram.get(s) : 0) +1);
-			}
-		);
-		AtomicInteger dups= new AtomicInteger(0);
-		vars_b.forEach(b -> {
-			if(histogram.containsKey(b) && histogram.get(b)>0) {
-				dups.incrementAndGet();
-				histogram.put(b, histogram.get(b)-1);
-			}
-		});
-		return dups.get();
-	}
-	
-	private double JoinsWeight(List<Node> vars_s, List<Node> vars_p, List<Node> vars_o) {
-//		System.out.println("|||| Star: "+getStarJoins(vars_s, vars_o)/Resources.J_Ts + " Chain: "+getChainJoins(vars_s, vars_o)/Resources.J_Tc  + " Unusual: "+ getUnusualJoins(vars_s, vars_p, vars_o)/Resources.J_Tu);
-		return 1 + getStarJoins(vars_s, vars_o) + getChainJoins(vars_s, vars_o) + getUnusualJoins(vars_s, vars_p, vars_o);
-	}
 	
 	/**
 	 * return the service cost according to the bindings as a weighted sum
@@ -199,11 +130,7 @@ public class Formula7greedy extends Formula {
 	 */
 	private double calculateCost(Service_analyzer service, Set<Node> bindings) {
 		Double weightedJoinedSum = getUnboundVarsCost(service.getSubs(), 
-				service.getPreds(), service.getObjs(), bindings)/
-				JoinsWeight(
-						service.getSubs(), 
-						service.getPreds(), 
-						service.getObjs());
+				service.getPreds(), service.getObjs(), bindings);
 		return weightedJoinedSum;
 	}
 
@@ -262,8 +189,8 @@ public class Formula7greedy extends Formula {
 	 * @return
 	 */
 	private double calculateTripleWeights(int totalSubs, int totalPreds, int totalObjs) {
-		return totalSubs * Resources.W_S + totalPreds * Resources.W_P + 
-				totalObjs * Resources.W_O;
+		return totalSubs+ totalPreds + 
+				totalObjs ;
 	}
 
 	/**

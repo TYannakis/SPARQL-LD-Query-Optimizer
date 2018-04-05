@@ -16,17 +16,17 @@ import ics.forth.query_analyzer.Var_Analyzer;
 import ics.forth.utils.Resources;
 
 /**
- * implements formula 7/ JWVCB
+ * implements formula 7/ JWUVC
  * 
  * @author Thanos Yannakis (yannakis@ics.forth.gr)
  *
  */
-public class Formula7test extends Formula {
+public class JWUVC extends Formula {
 	private Set<Service_analyzer> services;
 	private List<Double> costs_f6;
 	private List<List<Integer>> orders;
 
-	public Formula7test(Query_analyzer q) {
+	public JWUVC(Query_analyzer q) {
 		services = q.getServices();
 		init();
 	}

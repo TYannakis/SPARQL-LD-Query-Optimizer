@@ -11,16 +11,16 @@ import ics.forth.query_analyzer.Query_analyzer;
 import ics.forth.query_analyzer.Service_analyzer;
 
 /**
- * implements formula 5/ VCB
+ * implements formula 5/ UVC
  * @author Thanos Yannakis (yannakis@ics.forth.gr)
  *
  */
-public class Formula_5 extends Formula {
+public class UVC extends Formula {
 	private Query_analyzer query;
 	private Set<Service_analyzer> services;
 	private List<Double> costs_f5;
 	private List<List<Integer>> orders;
-	public Formula_5(Query_analyzer q) {
+	public UVC(Query_analyzer q) {
 		this.query=q;
 		services = q.getServices();
 		init();
