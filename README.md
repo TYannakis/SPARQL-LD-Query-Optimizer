@@ -1,11 +1,10 @@
 # Heuristics-based Query Reordering for SPARQL 1.1 and SPARQL-LD
 
-This library implements a set of heuristics-based query reordering methods for SPARQL 1.1 and [SPARQL-LD](https://github.com/fafalios/sparql-ld "SPARQL-LD") that make use of a greedy algorithm for choosing a near to optimal query execution plan. The methods reorder the SERVICE graph patterns based on selectivity estimation on new unbound variables, without requiring the gathering and use of statistics from the remote sources. This decreases the number of intermediate results and thus the number of calls to remote resources and the overal query execution time. 
+This library implements a set of heuristics-based query reordering methods for federated queries in SPARQL 1.1 and [SPARQL-LD](https://github.com/fafalios/sparql-ld "SPARQL-LD"). The methods reorder the SERVICE graph patterns based on selectivity estimation on new unbound variables, without requiring the gathering and use of statistics from the remote sources. This decreases the number of intermediate results and thus the number of calls to remote resources and the overal query execution time. 
 
 In a nutshell, this library provides:
 * A set of query reordering methods for SPARQL 1.1 and SPARQL-LD, which considers the number and type of unbound variables and joins 
 * A greedy algorithm for choosing a near to optimal query execution plan for cases of queries with many service patterns
-
 
 ### Reordering methods
 1. VC (Variable Count)
